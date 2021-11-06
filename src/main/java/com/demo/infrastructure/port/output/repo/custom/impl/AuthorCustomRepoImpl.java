@@ -26,21 +26,22 @@ import java.util.UUID;
 @Transactional
 public class AuthorCustomRepoImpl implements AuthorCustomRepo {
 
-
     @PersistenceContext
     private EntityManager entityManager;
 
-
     //N + 1 and fetch problem when try to fetch entities of the same relationship
     @Override
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true) no transactional to execute n+1
     public List<Author> authorNPlus1(FilterDTO filterDTO) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Author> query = criteriaBuilder.createQuery(Author.class);
         Root<Author> author = query.from(Author.class);
+        this.<Author, Book>doFetch(author, Author_.BOOKS); //fetch to avoid lazy init over M-To-M fetch
+        this.<Author, Convention>doFetch(author, Author_.CONVENTIONS); //also, over this one
         CriteriaQuery<Author> completeQuery = query.select(author)
                 .where(this.<Author, Book, Convention>predicates(filterDTO, author, criteriaBuilder))
                 .orderBy(criteriaBuilder.asc(author.get(Author_.name)));
+
         return entityManager.createQuery(completeQuery)
                 .setFirstResult(filterDTO.getOffset())
                 .setMaxResults(filterDTO.getLimit())

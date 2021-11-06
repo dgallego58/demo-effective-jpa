@@ -1,0 +1,23 @@
+spring:
+  sleuth:
+    propagation:
+      type:
+        - b3
+        - w3c
+    opentracing:
+      enabled: true
+  zipkin:
+    base-url: http://localhost:9411
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+    jmx:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true

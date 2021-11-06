@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'idea'
+    id 'jacoco'
 }
 
 group = 'com.demo'
@@ -16,6 +18,11 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+idea.module{
+    downloadSources(true)
+    downloadJavadoc(true)
 }
 
 ext {
@@ -36,10 +43,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'de.codecentric:spring-boot-admin-starter-server'
     implementation 'de.codecentric:spring-boot-admin-starter-client'
+    implementation 'io.opentracing.brave:brave-opentracing'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-
-    implementation 'de.codecentric:spring-boot-admin-server-ui:2.5.3'
-    implementation 'de.codecentric:spring-boot-admin-server:2.5.3'
+    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
 
     // DB and fetch
     runtimeOnly 'com.h2database:h2'
@@ -49,6 +55,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     //documentation
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
