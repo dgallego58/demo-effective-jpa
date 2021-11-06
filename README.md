@@ -43,6 +43,12 @@ then you can go to `http://localhost:16686` on your browser and see Jaeger UI
 
 this app has actuator with all of its endpoints open way JMX or WEB, so you can see algo with Spring Boot Admin
 
+to run it execute with your IDE of preference or using gradle
+
+```cmd
+.\gradlew clean build bootRun
+```
+
 * you can check the admin UI over `http://localhost:8080/effective-jpa/admin`
 * and swagger (OpenAPI) over `http://localhost:8080/effective-jpa/swagger-ui.html`
 
