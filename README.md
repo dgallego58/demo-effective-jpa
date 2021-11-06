@@ -13,7 +13,7 @@ Then all of those transactions being traced and register in Jaeger
 
 first, make sure you have Docker then pull Jaeger's all-in-one docker image
 
-to make this easy in the folder `/scripts` there is a .sh to make you execute
+to make this easy in the folder `/scripts` there is a `.sh` to make you execute the jaeger all previously configured
 
 you can use shell to run it
 
