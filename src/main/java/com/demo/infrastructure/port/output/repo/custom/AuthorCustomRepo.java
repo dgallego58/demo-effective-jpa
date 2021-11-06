@@ -9,9 +9,8 @@ import java.util.List;
 public interface AuthorCustomRepo {
 
     List<Author> authorNPlus1(FilterDTO filter);
+
     List<Author> authorsMultiFetch(FilterDTO filterDTO);
 
-    // QUERIES PARITICIONADAS
-    @Transactional(readOnly = true)
     List<Author> authorByPartition(FilterDTO filterDTO);
 }
