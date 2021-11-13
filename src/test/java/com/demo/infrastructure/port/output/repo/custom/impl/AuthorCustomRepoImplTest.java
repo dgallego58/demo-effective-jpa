@@ -1,5 +1,6 @@
 package com.demo.infrastructure.port.output.repo.custom.impl;
 
+import com.demo.application.persistence.BlazePersistenceConfiguration;
 import com.demo.infrastructure.port.input.dto.Filter;
 import com.demo.infrastructure.port.input.dto.FilterDTO;
 import com.demo.infrastructure.port.output.data.Author;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -30,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
+@Import(value = {BlazePersistenceConfiguration.class})
 @SuppressWarnings(value = {"rawtypes"})
 class AuthorCustomRepoImplTest {
 
@@ -51,7 +54,7 @@ class AuthorCustomRepoImplTest {
 
     @BeforeEach
     void setUp() {
-        authorRepository.saveAllAndFlush(Arrays.asList(gabo(), caycedo()));
+        authorRepository.saveAll(Arrays.asList(gabo(), caycedo()));
     }
 
     @Test

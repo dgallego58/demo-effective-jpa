@@ -20,15 +20,18 @@ repositories {
     mavenCentral()
 }
 
-idea.module{
-    downloadSources(true)
-    downloadJavadoc(true)
+idea {
+    module {
+        downloadSources(true)
+        downloadJavadoc(true)
+    }
 }
 
 ext {
     set('springBootAdminVersion', "2.4.3")
     set('testcontainersVersion', "1.16.0")
     set('springCloudVersion', "2020.0.4")
+    set('blazePersistenceVersion', '1.6.3')
 }
 
 dependencies {
@@ -47,9 +50,29 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
 
-    // DB and fetch
+    // DBs
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
+
+    //Blaze modules for DTO better handling
+    //core blaze
+    implementation "com.blazebit:blaze-persistence-core-api:${blazePersistenceVersion}"
+    runtimeOnly "com.blazebit:blaze-persistence-core-impl:${blazePersistenceVersion}"
+    // blaze hibernate 5.4
+    runtimeOnly "com.blazebit:blaze-persistence-integration-hibernate-5.4:${blazePersistenceVersion}"
+    // blaze entity view module
+    implementation "com.blazebit:blaze-persistence-entity-view-api:${blazePersistenceVersion}"
+    implementation "com.blazebit:blaze-persistence-entity-view-impl:${blazePersistenceVersion}"
+    // blaze spring integration
+    implementation "com.blazebit:blaze-persistence-integration-entity-view-spring:${blazePersistenceVersion}"
+    implementation "com.blazebit:blaze-persistence-integration-spring-data-2.4:${blazePersistenceVersion}"
+    // dependencies for blaze spring integration
+    implementation "com.blazebit:blaze-persistence-jpa-criteria-api:${blazePersistenceVersion}"
+    runtimeOnly "com.blazebit:blaze-persistence-jpa-criteria-impl:${blazePersistenceVersion}"
+
+    implementation "com.blazebit:blaze-persistence-jpa-criteria-jpa-2-compatibility:${blazePersistenceVersion}"
+    //blaze annotation processor
+    annotationProcessor "com.blazebit:blaze-persistence-entity-view-processor:${blazePersistenceVersion}"
 
     // annotation processors
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

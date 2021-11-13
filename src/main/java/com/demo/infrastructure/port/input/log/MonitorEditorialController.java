@@ -1,7 +1,6 @@
 package com.demo.infrastructure.port.input.log;
 
 import com.demo.infrastructure.helper.JacksonUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

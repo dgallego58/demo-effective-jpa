@@ -43,7 +43,7 @@ public class AuthorCustomRepoImpl implements AuthorCustomRepo {
                 .orderBy(criteriaBuilder.asc(author.get(Author_.name)));
 
         return entityManager.createQuery(completeQuery)
-                .setFirstResult(filterDTO.getOffset())
+                .setFirstResult(filterDTO.getOffset())//page*size
                 .setMaxResults(filterDTO.getLimit())
                 .getResultList();
     }

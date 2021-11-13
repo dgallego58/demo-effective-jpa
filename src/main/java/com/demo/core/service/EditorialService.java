@@ -4,6 +4,7 @@ import com.demo.core.usecase.EditorialUseCase;
 import com.demo.infrastructure.helper.AuthorDTOMapper;
 import com.demo.infrastructure.port.input.dto.AuthorDTO;
 import com.demo.infrastructure.port.input.dto.FilterDTO;
+import com.demo.infrastructure.port.output.data.views.AuthorView;
 import com.demo.infrastructure.port.output.repo.AuthorRepository;
 
 import java.util.List;
@@ -46,5 +47,10 @@ public class EditorialService implements EditorialUseCase {
         AuthorDTOMapper mapper = new AuthorDTOMapper();
         var result = authorRepository.save(mapper.asData(authorDTO));
         return mapper.asDto(result);
+    }
+
+    @Override
+    public List<AuthorView> authorFetch(FilterDTO filterDTO) {
+        return authorRepository.findAllByFilterDTO(filterDTO);
     }
 }

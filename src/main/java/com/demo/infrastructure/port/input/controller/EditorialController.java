@@ -1,10 +1,10 @@
 package com.demo.infrastructure.port.input.controller;
 
 import com.demo.core.usecase.EditorialUseCase;
-import com.demo.infrastructure.helper.JacksonUtil;
 import com.demo.infrastructure.port.input.controller.swagger.EditorialSwagger;
 import com.demo.infrastructure.port.input.dto.AuthorDTO;
 import com.demo.infrastructure.port.input.dto.FilterDTO;
+import com.demo.infrastructure.port.output.data.views.AuthorView;
 import io.micrometer.core.annotation.Timed;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,5 +64,16 @@ public class EditorialController implements EditorialSwagger {
             value = "partition_fetch")
     public ResponseEntity<List<AuthorDTO>> partitionFetch(FilterDTO filterDTO) {
         return ResponseEntity.ok(editorialUseCase.authorsQueryParts(filterDTO));
+    }
+
+    @Override
+    @Timed(description = "Metric for in query parts",
+            extraTags = {"cardinality", "multiple",
+                    "formato", "json",
+                    "info", "author",
+                    "presentation", "report"},
+            value = "partition_fetch")
+    public ResponseEntity<List<AuthorView>> authorView(FilterDTO filterDTO) {
+        return ResponseEntity.ok(editorialUseCase.authorFetch(filterDTO));
     }
 }
