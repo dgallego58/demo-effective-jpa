@@ -3,6 +3,7 @@ package com.demo.infrastructure.port.input.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.EnumMap;
+import java.util.Map;
 
 @Schema(description = "the filters used, offset is where the record start, and limit how many records will be loaded", example = "{\n" +
         "  \"limit\": 20,\n" +
@@ -21,7 +22,7 @@ public class FilterDTO {
 
     private int offset;
     private int limit;
-    private EnumMap<Filter, Object> filters;
+    private Map<Filter, Object> filters;
 
     public FilterDTO() {
         this.offset = 0;
@@ -47,11 +48,11 @@ public class FilterDTO {
         return this;
     }
 
-    public EnumMap<Filter, Object> getFilters() {
+    public Map<Filter, Object> getFilters() {
         return filters;
     }
 
-    public FilterDTO setFilters(EnumMap<Filter, Object> filters) {
+    public FilterDTO setFilters(Map<Filter, Object> filters) {
         this.filters = filters;
         return this;
     }

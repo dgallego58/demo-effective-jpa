@@ -8,9 +8,6 @@ import com.demo.infrastructure.port.output.data.Author;
 import java.util.List;
 import java.util.UUID;
 
-;
-
-
 @EntityView(Author.class)
 public interface AuthorView {
 

@@ -24,8 +24,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Transactional(readOnly = true)
@@ -54,7 +54,7 @@ public class AuthorViewCustomRepoImpl implements AuthorViewCustomRepo {
         return authorViewCriteriaBuilder.getResultList();
     }
 
-    public Predicate[] predicates(Root<Author> root, EnumMap<Filter, Object> filters, BlazeCriteriaBuilder cb) {
+    public Predicate[] predicates(Root<Author> root, Map<Filter, Object> filters, BlazeCriteriaBuilder cb) {
         List<Predicate> predicateList = new ArrayList<>();
         filters.forEach((filter, value) -> {
             switch (filter) {
