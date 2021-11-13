@@ -108,5 +108,7 @@ sonarqube {
         property "sonar.projectKey", "dgallego58_demo-effective-jpa"
         property "sonar.organization", "dgallego58"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.sources", "src"
+
     }
 }
