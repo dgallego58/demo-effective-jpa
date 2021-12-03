@@ -50,7 +50,6 @@ public class AuthorViewCustomRepoImpl implements AuthorViewCustomRepo {
         query.where(predicates(root, filterDTO.getFilters(), cb));
         CriteriaBuilder<Author> criteriaBuilder = query.createCriteriaBuilder(entityManager);
         CriteriaBuilder<AuthorView> authorViewCriteriaBuilder = evm.applySetting(EntityViewSetting.create(AuthorView.class), criteriaBuilder);
-
         return authorViewCriteriaBuilder.getResultList();
     }
 

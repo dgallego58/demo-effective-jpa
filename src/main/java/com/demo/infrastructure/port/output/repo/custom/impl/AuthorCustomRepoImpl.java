@@ -4,7 +4,9 @@ import com.demo.infrastructure.port.input.dto.FilterDTO;
 import com.demo.infrastructure.port.output.data.Author;
 import com.demo.infrastructure.port.output.data.Author_;
 import com.demo.infrastructure.port.output.data.Book;
+import com.demo.infrastructure.port.output.data.Book_;
 import com.demo.infrastructure.port.output.data.Convention;
+import com.demo.infrastructure.port.output.data.Convention_;
 import com.demo.infrastructure.port.output.repo.custom.AuthorCustomRepo;
 import org.hibernate.jpa.QueryHints;
 import org.springframework.stereotype.Repository;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-@Transactional
+@Transactional(readOnly = true)
 public class AuthorCustomRepoImpl implements AuthorCustomRepo {
 
     @PersistenceContext
@@ -83,7 +85,6 @@ public class AuthorCustomRepoImpl implements AuthorCustomRepo {
 
     // MULTI-FETCH en un PAGINADO
     @Override
-    @Transactional(readOnly = true)
     public List<Author> authorsMultiFetch(FilterDTO filterDTO) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Author> query = cb.createQuery(Author.class);
@@ -105,7 +106,6 @@ public class AuthorCustomRepoImpl implements AuthorCustomRepo {
 
     // PARTITION QUERY
     @Override
-    @Transactional(readOnly = true)
     public List<Author> authorByPartition(FilterDTO filterDTO) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UUID> query = cb.createQuery(UUID.class);
@@ -134,6 +134,24 @@ public class AuthorCustomRepoImpl implements AuthorCustomRepo {
         return entityManager.createQuery(finalQuery)
                 .setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false) //discarding duplicated java object to optimize memory
                 .getResultList();
+    }
+
+
+    @Override
+    public List<Author> fetchCast(FilterDTO filterDTO) {
+        var cb = entityManager.getCriteriaBuilder();
+        var cq = cb.createQuery(Author.class);
+        var root = cq.from(Author.class);
+        var books = (Join<Author, Book>) root.fetch(Author_.books, JoinType.LEFT);
+        var conventions = (Join<Author, Convention>) root.fetch(Author_.conventions, JoinType.LEFT);
+
+        Predicate[] predicates = this.predicates(filterDTO, root, cb);
+        cq.distinct(true)
+                .where(predicates)
+                .orderBy(cb.asc(books.get(Book_.title)), cb.desc(conventions.get(Convention_.location)));
+
+        return entityManager.createQuery(cq).setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false).getResultList();
+
     }
 
 }

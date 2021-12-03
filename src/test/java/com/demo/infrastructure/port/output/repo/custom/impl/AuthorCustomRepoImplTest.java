@@ -115,6 +115,26 @@ class AuthorCustomRepoImplTest {
         log.info("Conventions are {} Books are {}", conventionLocation, bookTitle);
     }
 
+    @Test
+    void testGraph() {
+        log.info("Query con GraphParser");
+        var result = authorRepository.fetchCast(filterDTO());
+        assertThat(result).isNotEmpty()
+                .first()
+                .matches(author -> author.getBooks()
+                        .stream()
+                        .anyMatch(book -> book.getTitle().contains("mis")))
+                .matches(author -> author.getConventions()
+                        .stream()
+                        .anyMatch(convention -> "Aracataca".equals(convention.getLocation())));
+        var bookTitle = result.stream().flatMap(author -> author.getBooks().stream()).map(Book::getTitle)
+                .collect(Collectors.toList());
+        var conventionLocation = result.stream().flatMap(author -> author.getConventions().stream())
+                .map(Convention::getLocation).collect(Collectors.toList());
+        log.info("Conventions are {}", conventionLocation);
+        log.info("Books are {}", bookTitle);
+    }
+
 
     private FilterDTO filterDTO() {
         EnumMap<Filter, Object> filterObjectEnumMap = new EnumMap<>(Filter.class);

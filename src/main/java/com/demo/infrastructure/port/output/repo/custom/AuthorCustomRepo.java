@@ -12,4 +12,6 @@ public interface AuthorCustomRepo {
     List<Author> authorsMultiFetch(FilterDTO filterDTO);
 
     List<Author> authorByPartition(FilterDTO filterDTO);
+
+    List<Author> fetchCast(FilterDTO filterDTO);
 }
