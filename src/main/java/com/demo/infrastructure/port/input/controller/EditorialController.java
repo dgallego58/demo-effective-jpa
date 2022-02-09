@@ -30,7 +30,7 @@ public class EditorialController implements EditorialSwagger {
                     "presentation", "report"},
             value = "insert_author")
     public ResponseEntity<AuthorDTO> register(AuthorDTO authorDTO) {
-        return ResponseEntity.ok(editorialUseCase.register(authorDTO));
+        return ResponseEntity.ok().header("custom-head", "test").body(editorialUseCase.register(authorDTO));
     }
 
     @Override
