@@ -81,22 +81,26 @@ public class EditorialService implements EditorialUseCase {
         final AtomicInteger i = new AtomicInteger();
 
         try (var authorStreams = authorRepository.streamAll()) {
+            var sequenceWriter = this.writerWrapper.getCsvWriter(outputStream);
             authorStreams.forEach(author -> {
                 i.incrementAndGet();
                 log.info("author Entity: {}", author);
                 var dto = mapper.asDto(author);
-                writeStream(outputStream, dto);
+                writeStream(sequenceWriter, dto);
                 entityManager.detach(author);
             });
+        } catch (IOException e) {
+            String stacktrace = ExceptionUtils.getStackTrace(e);
+            log.error("Streaming error {}", stacktrace);
+            throw new NoStreamableDataException("Cannot be streamed", e);
         }
         log.info("Records {}", i.get());
     }
 
-    private void writeStream(OutputStream outputStream, AuthorDTO authorDto) {
+    private void writeStream(SequenceWriter writer, AuthorDTO authorDto) {
         log.info("writing: {}", authorDto);
         try {
-            var sequenceWriter = this.writerWrapper.getCsvWriter(outputStream);
-            sequenceWriter.write(authorDto);
+            writer.write(authorDto);
         } catch (IOException e) {
             String stacktrace = ExceptionUtils.getStackTrace(e);
             log.error("Streaming error {}", stacktrace);
