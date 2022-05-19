@@ -81,9 +81,12 @@ dependencies {
     annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
+
     //documentation
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
-    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.8'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.8'
 
     // testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

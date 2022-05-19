@@ -6,9 +6,11 @@ import com.demo.infrastructure.port.input.dto.AuthorDTO;
 import com.demo.infrastructure.port.input.dto.FilterDTO;
 import com.demo.infrastructure.port.output.data.views.AuthorView;
 import io.micrometer.core.annotation.Timed;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.util.List;
 
@@ -22,6 +24,9 @@ public class EditorialController implements EditorialSwagger {
         this.editorialUseCase = editorialUseCase;
     }
 
+    /**
+     * add IntStream.range(0, 9_999).mapToObj(value -> authorDTO).forEach(editorialUseCase::register);
+     */
     @Override
     @Timed(description = "Metric for author insertion",
             extraTags = {"cardinality", "singular",
@@ -76,4 +81,21 @@ public class EditorialController implements EditorialSwagger {
     public ResponseEntity<List<AuthorView>> authorView(FilterDTO filterDTO) {
         return ResponseEntity.ok(editorialUseCase.authorFetch(filterDTO));
     }
+
+    @Override
+    @Timed(description = "Metric for in stream parts",
+            extraTags = {"cardinality", "multiple",
+                    "formato", "json",
+                    "info", "author",
+                    "presentation", "report"},
+            value = "partition_fetch")
+    public ResponseEntity<StreamingResponseBody> streamAuthors() {
+
+        StreamingResponseBody responseBody = editorialUseCase::streamAuthors;
+        return ResponseEntity.ok()
+                             .header("Content-Disposition", "attachment;filename=download.csv")
+                             .contentType(MediaType.TEXT_PLAIN)
+                             .body(responseBody);
+    }
+
 }

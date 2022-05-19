@@ -9,7 +9,7 @@ spring:
         url: http://localhost:8080/effective-jpa/admin
         instance:
           name: ${spring.application.name}
-          prefer-ip: true
+          service-host-type: ip
       server:
         enabled: true
       context-path: /admin
