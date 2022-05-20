@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: demo-effective-jpa
@@ -17,6 +18,9 @@ spring:
     import:
       - classpath:application-database.yaml
       - classpath:application-ops.yaml
+  mvc:
+    async:
+      request-timeout: 3600000
 server:
   servlet:
     context-path: /effective-jpa

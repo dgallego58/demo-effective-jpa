@@ -118,16 +118,14 @@ public class EditorialService implements EditorialUseCase {
                                 {
                                     try {
                                         i.incrementAndGet();
-                                        //Thread.sleep(800);
                                         String json = JacksonUtil.STRINGIFY.apply(authorDTO);
                                         String line = JacksonUtil.STRINGIFY.apply(authorDTO) + "\n";
                                         log.info("Server sent: {}", json);
                                         outputStream.write(line.getBytes(StandardCharsets.UTF_8));
                                         outputStream.flush();
-                                    } catch (IOException e) {
+                                    } catch (IOException /*| InterruptedException*/ e) {
                                         String stackTrace = ExceptionUtils.getStackTrace(e);
                                         log.error("Error on write json {}", stackTrace);
-                                        //Thread.currentThread().interrupt();
                                         throw new NoStreamableDataException(e.getMessage(), e);
                                     }
                                 }

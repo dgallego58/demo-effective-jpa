@@ -36,7 +36,7 @@ public class EditorialController implements EditorialSwagger {
                     "presentation", "report"},
             value = "insert_author")
     public ResponseEntity<AuthorDTO> register(final AuthorDTO authorDTO) {
-        IntStream.range(0, 999_999)
+        IntStream.range(0, 100_000)// 100.000 records in db
                  .mapToObj(value -> authorDTO.setName(String.valueOf(value)))
                  .forEach(editorialUseCase::register);
         return ResponseEntity.ok().header("custom-head", "test").body(editorialUseCase.register(authorDTO));
