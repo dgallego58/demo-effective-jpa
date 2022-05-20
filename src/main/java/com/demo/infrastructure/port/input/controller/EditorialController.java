@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping(path = "/editorial")
@@ -34,7 +35,10 @@ public class EditorialController implements EditorialSwagger {
                     "info", "author",
                     "presentation", "report"},
             value = "insert_author")
-    public ResponseEntity<AuthorDTO> register(AuthorDTO authorDTO) {
+    public ResponseEntity<AuthorDTO> register(final AuthorDTO authorDTO) {
+        IntStream.range(0, 999_999)
+                 .mapToObj(value -> authorDTO.setName(String.valueOf(value)))
+                 .forEach(editorialUseCase::register);
         return ResponseEntity.ok().header("custom-head", "test").body(editorialUseCase.register(authorDTO));
     }
 
@@ -91,10 +95,24 @@ public class EditorialController implements EditorialSwagger {
             value = "partition_fetch")
     public ResponseEntity<StreamingResponseBody> streamAuthors() {
 
-        StreamingResponseBody responseBody = editorialUseCase::streamAuthors;
+        StreamingResponseBody responseBody = editorialUseCase::streamToFile;
         return ResponseEntity.ok()
                              .header("Content-Disposition", "attachment;filename=download.csv")
-                             .contentType(MediaType.TEXT_PLAIN)
+                             .header("Content-Type", "application/csv;charset=UTF-8")
+                             .body(responseBody);
+    }
+
+    @Override
+    @Timed(description = "Metric for in stream parts",
+            extraTags = {"cardinality", "multiple",
+                    "formato", "json",
+                    "info", "author",
+                    "presentation", "report"},
+            value = "partition_fetch")
+    public ResponseEntity<StreamingResponseBody> streamAuthorsJson() {
+        StreamingResponseBody responseBody = editorialUseCase::streamToJson;
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_NDJSON)
                              .body(responseBody);
     }
 

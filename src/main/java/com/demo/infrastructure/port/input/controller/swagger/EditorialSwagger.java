@@ -3,7 +3,6 @@ package com.demo.infrastructure.port.input.controller.swagger;
 import com.demo.infrastructure.port.input.dto.AuthorDTO;
 import com.demo.infrastructure.port.input.dto.FilterDTO;
 import com.demo.infrastructure.port.output.data.views.AuthorView;
-import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.ResponseEntity;
@@ -42,12 +41,9 @@ public interface EditorialSwagger {
             @RequestBody @Schema(description = "the request object to filter") FilterDTO filterDTO);
 
 
-    @Timed(description = "Metric for in stream parts",
-            extraTags = {"cardinality", "multiple",
-                    "formato", "json",
-                    "info", "author",
-                    "presentation", "report"},
-            value = "partition_fetch")
     @GetMapping(path = "/authors-stream")
     ResponseEntity<StreamingResponseBody> streamAuthors();
+
+    @GetMapping(path = "/authors-json-stream")
+    ResponseEntity<StreamingResponseBody> streamAuthorsJson();
 }

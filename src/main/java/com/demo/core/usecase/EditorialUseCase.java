@@ -19,5 +19,7 @@ public interface EditorialUseCase {
 
     List<AuthorView> authorFetch(FilterDTO filterDTO);
 
-    void streamAuthors(OutputStream outputStream);
+    void streamToFile(OutputStream outputStream);
+
+    void streamToJson(OutputStream outputStream);
 }

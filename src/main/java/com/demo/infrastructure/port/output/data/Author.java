@@ -1,6 +1,7 @@
 package com.demo.infrastructure.port.output.data;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -20,6 +21,7 @@ public class Author {
     @GeneratedValue
     private UUID id;
 
+    @Column(length = 300)
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)

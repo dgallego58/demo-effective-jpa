@@ -2,8 +2,10 @@ package com.demo.core.service;
 
 import com.demo.core.usecase.EditorialUseCase;
 import com.demo.infrastructure.helper.AuthorDTOMapper;
+import com.demo.infrastructure.helper.JacksonUtil;
 import com.demo.infrastructure.port.input.dto.AuthorDTO;
 import com.demo.infrastructure.port.input.dto.FilterDTO;
+import com.demo.infrastructure.port.output.data.Author;
 import com.demo.infrastructure.port.output.data.views.AuthorView;
 import com.demo.infrastructure.port.output.repo.AuthorRepository;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -21,9 +23,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EditorialService implements EditorialUseCase {
 
@@ -76,7 +80,7 @@ public class EditorialService implements EditorialUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public void streamAuthors(OutputStream outputStream) {
+    public void streamToFile(OutputStream outputStream) {
         var mapper = new AuthorDTOMapper();
         final AtomicInteger i = new AtomicInteger();
 
@@ -95,6 +99,42 @@ public class EditorialService implements EditorialUseCase {
             throw new NoStreamableDataException("Cannot be streamed", e);
         }
         log.info("Records {}", i.get());
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public void streamToJson(OutputStream outputStream) {
+        var mapper = new AuthorDTOMapper();
+        final AtomicInteger i = new AtomicInteger();
+        try (Stream<Author> authorStream = authorRepository.streamAll()) {
+            //ObjectWriter writer = JacksonUtil.jsonMapper.writer(); //thread safe writer
+            authorStream.map(author -> {
+                            var dto = mapper.asDto(author);
+                            entityManager.detach(author);
+                            return dto;
+                        })
+                        .forEach(authorDTO ->
+                                {
+                                    try {
+                                        i.incrementAndGet();
+                                        //Thread.sleep(800);
+                                        String json = JacksonUtil.STRINGIFY.apply(authorDTO);
+                                        String line = JacksonUtil.STRINGIFY.apply(authorDTO) + "\n";
+                                        log.info("Server sent: {}", json);
+                                        outputStream.write(line.getBytes(StandardCharsets.UTF_8));
+                                        outputStream.flush();
+                                    } catch (IOException e) {
+                                        String stackTrace = ExceptionUtils.getStackTrace(e);
+                                        log.error("Error on write json {}", stackTrace);
+                                        //Thread.currentThread().interrupt();
+                                        throw new NoStreamableDataException(e.getMessage(), e);
+                                    }
+                                }
+                        );
+            log.info("Records sent: {}", i.get());
+        }
+
     }
 
     private void writeStream(SequenceWriter writer, AuthorDTO authorDto) {
